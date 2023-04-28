@@ -1,71 +1,82 @@
-#gmae khelne wala funtion
-def game(answer, guessword):
-        feedback = []
-        for i,letter in enumerate(guessword):
-            if letter not in answer:
-                feedback.append(0)
-            else:
-                if letter == answer[i]:
-                    feedback.append(2)
-                else:
-                    feedback.append(1)
-        
-    
-        return feedback
+from google.colab import drive
+import sys
+drive.mount('/content/drive/', force_remount = True)
+sys.path.append('/content/drive/MyDrive/wordle')
+from utils import *
+import math
+import requests
 
-master_list=['happy','smile','arise','arose','lizht','ariae','wzazr']
-alphabet="abcdefghigklmnopqrstuvwxyz"
-frq={}
-result=game("games","salet")
+class Solver(Wordle):
+    def __init__(self):
+        super().__init__()
 
-#list ko short karne wala funtion
-def sortinglist(master_list,guess,result):
+    master_list = []
+    response = requests.get('https://raw.githubusercontent.com/charlesreid1/five-letter-words/master/sgb-words.txt')
+    data = response.text
+    master_list = data.split('\n')
+    master_list.remove('')
+
+    outcomes=[[0, 0, 0, 0, 0], [0, 0, 0, 0, 1], [0, 0, 0, 0, 2], [0, 0, 0, 1, 0], [0, 0, 0, 1, 1], [0, 0, 0, 1, 2], [0, 0, 0, 2, 0], [0, 0, 0, 2, 1], [0, 0, 0, 2, 2], [0, 0, 1, 0, 0], [0, 0, 1, 0, 1], [0, 0, 1, 0, 2], [0, 0, 1, 1, 0], [0, 0, 1, 1, 1], [0, 0, 1, 1, 2], [0, 0, 1, 2, 0], [0, 0, 1, 2, 1], [0, 0, 1, 2, 2], [0, 0, 2, 0, 0], [0, 0, 2, 0, 1], [0, 0, 2, 0, 2], [0, 0, 2, 1, 0], [0, 0, 2, 1, 1], [0, 0, 2, 1, 2], [0, 0, 2, 2, 0], [0, 0, 2, 2, 1], [0, 0, 2, 2, 2], [0, 1, 0, 0, 0], [0, 1, 0, 0, 1], [0, 1, 0, 0, 2], [0, 1, 0, 1, 0], [0, 1, 0, 1, 1], [0, 1, 0, 1, 2], [0, 1, 0, 2, 0], [0, 1, 0, 2, 1], [0, 1, 0, 2, 2], [0, 1, 1, 0, 0], [0, 1, 1, 0, 1], [0, 1, 1, 0, 2], [0, 1, 1, 1, 0], [0, 1, 1, 1, 1], [0, 1, 1, 1, 2], [0, 1, 1, 2, 0], [0, 1, 1, 2, 1], [0, 1, 1, 2, 2], [0, 1, 2, 0, 0], [0, 1, 2, 0, 1], [0, 1, 2, 0, 2], [0, 1, 2, 1, 0], [0, 1, 2, 1, 1], [0, 1, 2, 1, 2], [0, 1, 2, 2, 0], [0, 1, 2, 2, 1], [0, 1, 2, 2, 2], [0, 2, 0, 0, 0], [0, 2, 0, 0, 1], [0, 2, 0, 0, 2], [0, 2, 0, 1, 0], [0, 2, 0, 1, 1], [0, 2, 0, 1, 2], [0, 2, 0, 2, 0], [0, 2, 0, 2, 1], [0, 2, 0, 2, 2], [0, 2, 1, 0, 0], [0, 2, 1, 0, 1], [0, 2, 1, 0, 2], [0, 2, 1, 1, 0], [0, 2, 1, 1, 1], [0, 2, 1, 1, 2], [0, 2, 1, 2, 0], [0, 2, 1, 2, 1], [0, 2, 1, 2, 2], [0, 2, 2, 0, 0], [0, 2, 2, 0, 1], [0, 2, 2, 0, 2], [0, 2, 2, 1, 0], [0, 2, 2, 1, 1], [0, 2, 2, 1, 2], [0, 2, 2, 2, 0], [0, 2, 2, 2, 1], [0, 2, 2, 2, 2], [1, 0, 0, 0, 0], [1, 0, 0, 0, 1], [1, 0, 0, 0, 2], [1, 0, 0, 1, 0], [1, 0, 0, 1, 1], [1, 0, 0, 1, 2], [1, 0, 0, 2, 0], [1, 0, 0, 2, 1], [1, 0, 0, 2, 2], [1, 0, 1, 0, 0], [1, 0, 1, 0, 1], [1, 0, 1, 0, 2], [1, 0, 1, 1, 0], [1, 0, 1, 1, 1], [1, 0, 1, 1, 2], [1, 0, 1, 2, 0], [1, 0, 1, 2, 1], [1, 0, 1, 2, 2], [1, 0, 2, 0, 0], [1, 0, 2, 0, 1], [1, 0, 2, 0, 2], [1, 0, 2, 1, 0], [1, 0, 2, 1, 1], [1, 0, 2, 1, 2], [1, 0, 2, 2, 0], [1, 0, 2, 2, 1], [1, 0, 2, 2, 2], [1, 1, 0, 0, 0], [1, 1, 0, 0, 1], [1, 1, 0, 0, 2], [1, 1, 0, 1, 0], [1, 1, 0, 1, 1], [1, 1, 0, 1, 2], [1, 1, 0, 2, 0], [1, 1, 0, 2, 1], [1, 1, 0, 2, 2], [1, 1, 1, 0, 0], [1, 1, 1, 0, 1], [1, 1, 1, 0, 2], [1, 1, 1, 1, 0], [1, 1, 1, 1, 1], [1, 1, 1, 1, 2], [1, 1, 1, 2, 0], [1, 1, 1, 2, 1], [1, 1, 1, 2, 2], [1, 1, 2, 0, 0], [1, 1, 2, 0, 1], [1, 1, 2, 0, 2], [1, 1, 2, 1, 0], [1, 1, 2, 1, 1], [1, 1, 2, 1, 2], [1, 1, 2, 2, 0], [1, 1, 2, 2, 1], [1, 1, 2, 2, 2], [1, 2, 0, 0, 0], [1, 2, 0, 0, 1], [1, 2, 0, 0, 2], [1, 2, 0, 1, 0], [1, 2, 0, 1, 1], [1, 2, 0, 1, 2], [1, 2, 0, 2, 0], [1, 2, 0, 2, 1], [1, 2, 0, 2, 2], [1, 2, 1, 0, 0], [1, 2, 1, 0, 1], [1, 2, 1, 0, 2], [1, 2, 1, 1, 0], [1, 2, 1, 1, 1], [1, 2, 1, 1, 2], [1, 2, 1, 2, 0], [1, 2, 1, 2, 1], [1, 2, 1, 2, 2], [1, 2, 2, 0, 0], [1, 2, 2, 0, 1], [1, 2, 2, 0, 2], [1, 2, 2, 1, 0], [1, 2, 2, 1, 1], [1, 2, 2, 1, 2], [1, 2, 2, 2, 0], [1, 2, 2, 2, 1], [1, 2, 2, 2, 2], [2, 0, 0, 0, 0], [2, 0, 0, 0, 1], [2, 0, 0, 0, 2], [2, 0, 0, 1, 0], [2, 0, 0, 1, 1], [2, 0, 0, 1, 2], [2, 0, 0, 2, 0], [2, 0, 0, 2, 1], [2, 0, 0, 2, 2], [2, 0, 1, 0, 0], [2, 0, 1, 0, 1], [2, 0, 1, 0, 2], [2, 0, 1, 1, 0], [2, 0, 1, 1, 1], [2, 0, 1, 1, 2], [2, 0, 1, 2, 0], [2, 0, 1, 2, 1], [2, 0, 1, 2, 2], [2, 0, 2, 0, 0], [2, 0, 2, 0, 1], [2, 0, 2, 0, 2], [2, 0, 2, 1, 0], [2, 0, 2, 1, 1], [2, 0, 2, 1, 2], [2, 0, 2, 2, 0], [2, 0, 2, 2, 1], [2, 0, 2, 2, 2], [2, 1, 0, 0, 0], [2, 1, 0, 0, 1], [2, 1, 0, 0, 2], [2, 1, 0, 1, 0], [2, 1, 0, 1, 1], [2, 1, 0, 1, 2], [2, 1, 0, 2, 0], [2, 1, 0, 2, 1], [2, 1, 0, 2, 2], [2, 1, 1, 0, 0], [2, 1, 1, 0, 1], [2, 1, 1, 0, 2], [2, 1, 1, 1, 0], [2, 1, 1, 1, 1], [2, 1, 1, 1, 2], [2, 1, 1, 2, 0], [2, 1, 1, 2, 1], [2, 1, 1, 2, 2], [2, 1, 2, 0, 0], [2, 1, 2, 0, 1], [2, 1, 2, 0, 2], [2, 1, 2, 1, 0], [2, 1, 2, 1, 1], [2, 1, 2, 1, 2], [2, 1, 2, 2, 0], [2, 1, 2, 2, 1], [2, 1, 2, 2, 2], [2, 2, 0, 0, 0], [2, 2, 0, 0, 1], [2, 2, 0, 0, 2], [2, 2, 0, 1, 0], [2, 2, 0, 1, 1], [2, 2, 0, 1, 2], [2, 2, 0, 2, 0], [2, 2, 0, 2, 1], [2, 2, 0, 2, 2], [2, 2, 1, 0, 0], [2, 2, 1, 0, 1], [2, 2, 1, 0, 2], [2, 2, 1, 1, 0], [2, 2, 1, 1, 1], [2, 2, 1, 1, 2], [2, 2, 1, 2, 0], [2, 2, 1, 2, 1], [2, 2, 1, 2, 2], [2, 2, 2, 0, 0], [2, 2, 2, 0, 1], [2, 2, 2, 0, 2], [2, 2, 2, 1, 0], [2, 2, 2, 1, 1], [2, 2, 2, 1, 2], [2, 2, 2, 2, 0], [2, 2, 2, 2, 1], [2, 2, 2, 2, 2]]
+    words_entropy={}
+    clear1=[]
     n=0
-    for i in range(5):
-        for word in master_list:
-            if result[i]==0:
-                if guess[i] in word[i]:
-                    master_list.remove(word)                                    
-            elif result[i]==1:
-               if guess[i] != word[i]:
-                    master_list.remove(word)                                                   
-            elif result[i]==2:
-               if guess[i] not in word:
-                    master_list.remove(word)
+    guess = "salet"
+    def reset_items():
+        Solver.master_list = Solver.data.split('\n')
+        Solver.master_list.remove('')
+        Solver.guess = "salet"
 
-    n+=1                
-    return master_list
+    #list ko short karne wala funtion
+    def sortinglist(chrt, feedback, flag):
+        
+        clear1 = []
+        for i in range(5):
+            for word in Solver.master_list:
+                if feedback[i]==0:
+                    if chrt[i] in word:
+                        clear1.append(word)                                  
+                elif feedback[i]==1:
+                    if chrt[i] != word[i]:
+                        clear1.append(word)        
+                elif feedback[i]==2:
+                    if chrt[i] not in word:
+                        clear1.append(word) 
+                    if chrt[i]==word[i]:
+                        clear1.append(word)             
+        if flag == 1:
+            for i in clear1 :
+                if i in Solver.master_list:
+                    Solver.master_list.remove(i)
+            return Solver.master_list
+        elif flag == 0:
+            return len(Solver.master_list) - len(set(clear1))
 
-# letters frequeny batane wala funtion 
-def frequency(alphabet,master_list):
-    
-    for j in alphabet:
-        x=0
-        for word in master_list:
-            for i in range(5):
-                if word[i]==j:
-                    x+=1
-        frq.update({j: x })    
-    return 0 
-#guess karne wala 
-def guesser(n):
-    if n==0:
-        guess="salet"
-    else:
-       guess= mainguesser()
-    
-    return guess
+    def mainguesser():
+        max_entropy_word=""
+        max_entropy = 0
+        for i in Solver.master_list:
+            entropy = 0
+            for result in Solver.outcomes:
+                try:
+                    p_x = ((Solver.sortinglist(i,result,0))/(len(Solver.master_list)))
+                    information = p_x * (math.log((1/p_x),2))
+                    entropy += information
 
-#second guess kya karna he ye batane wala
-def mainguesser():
-    
+                except ZeroDivisionError:
+                    continue
+            if entropy >= max_entropy:
+                max_entropy_word = i
+                max_entropy = entropy
+        return max_entropy_word
 
-
-
-
-frequency(alphabet,master_list)
-#print(frq)
-
-sortinglist(master_list,"salet",result)
-print(master_list)
-print (result)
+    def generate_guess(self, feedback=None):
+            if feedback is None:
+                Solver.reset_items()
+                Solver.guess = "salet"
+                Solver.guess = Solver.mainguesser()
+            else:
+                Solver.sortinglist(Solver.guess,feedback,1)
+                Solver.guess = Solver.mainguesser()
+            return Solver.guess 
+game = Game(Solver, N=50)
+game.run()
